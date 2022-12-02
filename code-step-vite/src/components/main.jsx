@@ -1,13 +1,13 @@
 import {Data} from './Data'
 import {useState,useEffect} from 'react'
 import uniqid from 'uniqid';
+import axios from 'axios'
+import {TfiLayoutMenuV} from 'react-icons/tfi'
 
 
 ///tabs
 import  Tabs from './Tabs/tab'
 import  TabsMobile from './Tabs/tab.Mobile'
-
-
 import  Bug from './Tabs/bug'
 import  File from './Tabs/file'
 import  Note from './Tabs/note'
@@ -17,22 +17,34 @@ import  Task from './Tabs/task'
 //step
 import Steps from './Steps/index'
 
-
+//branch 
+import Branch from './Branches/branch'
 
 
 
 
 
 export default function Main() {
+	const [userInfo,setUserInfo] =useState(()=>{
+		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",repo:"todo-mern"}
+	})
+	const [branch,setBranch] = useState([{name:"branch1"},{name:"branch2"},{name:"branch3"}])
 	const [step,setStep] = useState([]) //1
-	const [selectedStep,setSelectedStep] = useState(0) //2
+	const [selectedStep,setSelectedStep] = useState(null) //2
 	const [selectedTab,setSelectedTab] = useState(0) //3
 	const [toggleSideBar,setToggleSideBar] = useState(true) //4
+	const [branchName,setBranchName] = useState("")
     //step controller
+
+    const [file, setFile] = useState([])
+    const [commitUrl,setCommitUrl] = useState("")
+    const [content,setContent] = useState("")
+    const [path,setPath] =useState("")
 
 
 ///select current Step
-	function stepSelect(stepIndex){
+	function stepSelect(stepIndex,url){
+        getTree(url)
 		// setExpand(!expand)
 		setSelectedStep(stepIndex)
 	}
@@ -42,19 +54,80 @@ export default function Main() {
 
 	}
 ///select current Tab
-	function tabChangeHandle(tabIndex){
-		setSelectedTab(parseInt(tabIndex.target.value))
+	function tabChangeHandle(e){
+		setSelectedTab(parseInt(e.target.value))
 	}
 ///open side bar
 	function openSideBar(){
 		setToggleSideBar(!toggleSideBar)
 	}
 
+//selrct branch
+    function branchChangeHandle(e){
+        getCommits(e.target.value)
+        setStep([])
+        setFile([])
+        setSelectedStep(null)
+        setContent("")
+    }
+
 	useEffect(()=>{
+          getBranchs()
+	},[])
 
-	},[step])
+    ///function to get branches from api
+	function getBranchs() {
+    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/branches`).then((res) => {
+      // console.log(res.data)
+     setBranch(res.data)
+    })
+  }
 
-	
+  //function to set Current branch commit
+  function getCommits(name) {
+    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/commits?sha=${name}`).then((res) => {
+     //  console.log(res.data)
+      setStep(res.data)
+    })
+  }
+  //function to get explorer
+  function getTree(commitUrl) {
+    axios.get(`${commitUrl}?recursive=1`).then((res) => {
+      setFile(res.data.tree)
+    })
+  }
+
+
+function getContent(url,path){
+	setPath(path)
+    axios.get(url).then((res)=>{
+       setContent(atob(res.data.content))
+    })
+  }
+
+    /// function to nest tree data of github
+    function to_tree(d) {
+		  var new_d = {}
+		  for (var i of d) {
+		    var k = i._path.shift()
+		    if (!(k in new_d)) {
+		      new_d[k] = []
+		    }
+		    new_d[k].push(i)
+		  }
+		  return Object.keys(new_d).map(function(x) {
+		    var _pl = { 0: [], 1: [] }
+		    for (var i of new_d[x]) {
+		      _pl[i._path.length > 0 ? 1 : 0].push(i)
+		    }
+		    return {
+		      key: x,children:to_tree(_pl[1]), info:{..._pl[0]}
+		    }
+		  });		
+     }
+     var new_data = file.map(function(x) { return { ...x, '_path': JSON.parse(JSON.stringify(x.path.split('/'))) } })
+     const root = {key:userInfo.repo,children: to_tree(new_data),info:{"0":{url:""}}}
+
 	
 	return(
 		   <div className="p-2 relative">
@@ -65,8 +138,7 @@ export default function Main() {
 		   	  	logo
 		   	  </div>
 		   	  <div className="flex gap-2">
-		   	    <div className="cursor-pointer">888</div>
-		   	    <div onClick={openSideBar} className="cursor-pointer">000</div>
+		   	    <div onClick={openSideBar} className="cursor-pointer flex item-center"><TfiLayoutMenuV size={20}/></div>
 		   	  </div>
 		   </div>
 		   <div className="flex h-[90vh] gap-1 mt-2">
@@ -76,10 +148,15 @@ export default function Main() {
            {/*for device more than larger screen*/}
 
 		   <div className={`${toggleSideBar ? "hidden lg:block lg:w-2/12":"hidden"}`}>
-			      	 <div className=" flex flex-col h-[90vh] gap-1 px-2 text-white overflow-y-scroll">	
+	                      <Branch
+	                          branch={branch}
+	                          branchChangeHandle={branchChangeHandle}   
+			              />
+                     <div className=" flex flex-col h-[90vh] gap-1 text-white overflow-y-scroll">	
 			      	    <Steps 
 			      	          step={step} 
 			      	          setStep={setStep}
+			      	          branchName={branchName}
 			      	          stepSelect={stepSelect}
 			      	          selectedStep={selectedStep}
 			      	          setSelectedStep={setSelectedStep}
@@ -90,9 +167,14 @@ export default function Main() {
            {/*for device less than larger screen*/}
 
 		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"} z-10 w-1/2 bg-white absolute shadow-2xl`}>
+		              <Branch
+	                          branch={branch}
+	                          branchChangeHandle={branchChangeHandle}   
+			          />
 		              <Steps 
 			      	          step={step}
 			      	          setStep={setStep} 
+			      	          branchName={branchName}
 			      	          stepSelect={stepSelect}
 			      	          selectedStep={selectedStep}
 			      	          setSelectedStep={setSelectedStep}
@@ -101,13 +183,13 @@ export default function Main() {
 			 </div>
 {/*----------------------------------------------tabs-----------------------------------------------------------------*/}
 
-	      	<div className={`${toggleSideBar ? "w-full lg:w-10/12":"w-full"} transition-all`}>
+	      	<div className={`${toggleSideBar ? "w-full lg:w-10/12 transition-all":"w-full"}`}>
 		      <div className="flex flex-col gap-1 ">
 
            {/*for device more than larger screen*/}
 
-		      	 <div className="w-full hidden h-[8vh] md:block">
-		      	   <div className="flex h-full justify-around h-[8vh] gap-1">
+		      	 <div className="w-full hidden md:block">
+		      	   <div className="flex h-full h-10 justify-around">
 			      	    <Tabs 
 			      	       tabSelect={tabSelect}
 			      	       selectedTab={selectedTab}
@@ -127,9 +209,9 @@ export default function Main() {
 
 {/*----------------------------------------------contents-----------------------------------------------------------------*/}
 
-		      	 <div className="w-full h-[90vh] bg-white flex justify-center items-center  shadow-2xl shadow">
+		      	 <div className="w-full h-[550px] bg-white flex  shadow-2xl shadow">
 		      	 	{
-		      	 	  selectedTab===0 ? <File/> : 
+		      	 	  selectedTab===0 ? <File root={root} getContent={getContent} content={content} path={path}/> : 
 		      	 	  selectedTab===1 ? <Task/> : 
 		      	 	  selectedTab===2 ? <Note/> : 
 		      	 	  selectedTab===3 ? <Bug/>  :

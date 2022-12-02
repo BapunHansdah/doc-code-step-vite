@@ -1,5 +1,7 @@
 export default function TaskComponent(){
 		return (
-			  <>Task</>
+			  <div>
+			     task
+			  </div>
 			)
 	}

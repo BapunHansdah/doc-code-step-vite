@@ -3,7 +3,7 @@ export default function TabsMobile({tabChangeHandle}){
 
 	return(
 		  <>
-           <select type="option"  onChange={tabChangeHandle} className="w-full p-4 " placeholder="hello" >
+           <select type="option"  onChange={tabChangeHandle} className="w-full p-2 " placeholder="hello" >
 
 		  {
 		  	TabArr.map((t,i)=>{

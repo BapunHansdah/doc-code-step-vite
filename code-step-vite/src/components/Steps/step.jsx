@@ -7,29 +7,34 @@ export default function Step({
 	                         submitContext,
 	                         stepContext,
 	                         isContextEditing,
-	                         editContext}){
+	                         editContext,
+	                         branchName
+	                     }){
 
 	return(
 		 <div className="flex flex-col gap-1">
 		    {
 		    step.map((s,i)=>{
+		    	// if(s.branch === branchName){
 		          return (
-		          	   	<div key={s.id}>
+
+		          	   	<div key={i}>
 		                 {
 		                  isContextEditing && i === contextIndex ? <form onSubmit={submitContext}>
 		                                      <input className="p-2 text-black w-full" name="context" value={stepContext} onChange={stepContextChangeHandle} required={true} />
 	                                         </form> 
 	                                       :
 	                                         <div  
-	                                               onClick={()=>stepSelect(i)} 
-	                                               onDoubleClick={()=>editContext(i,s.context)}
+	                                               onClick={()=>stepSelect(i,s.commit.tree.url)} 
+	                                               onDoubleClick={()=>editContext(i,s.commit.message)}
 	                                               className={`flex justify-between shadow border hover:border-blue-500 ${i === selectedStep ? "bg-blue-500 text-white hover:scale-95":"bg-white text-black"} transition-all p-2 hover:bg-opacity-90 cursor-pointer`}>
-	                                               {i === selectedStep ? s.context : s.context.length >=10 ? s.context.slice(0,10)+"..." : s.context} 
+	                                               {i === selectedStep ? s.commit.message : s.commit.message.length >=10 ? s.commit.message.slice(0,10)+"..." : s.commit.message} 
 	                                               
 	                                         </div>
 		                  }
 		                </div>
 		            ) 
+		         // }
 		      })	
 		    }
 	    </div>

@@ -13,7 +13,8 @@ export default function Steps({
 	                          setStep,
 			      	          stepSelect,
 			      	          selectedStep,
-			      	          setSelectedStep
+			      	          setSelectedStep,
+			      	          branchName
 			      	      }){
 
 	const [stepContext,setStepContext] = useState("") //5
@@ -26,7 +27,7 @@ export default function Steps({
 		editContext(step.length,"")
 		//checking if it is a new context
 		if(!isContextEditing){
-	       setStep([...step,{id:uniqid(),context:""}])
+	       setStep([...step,{id:uniqid(),context:"",branch:branchName}])
 		}
 	}
 
@@ -93,7 +94,7 @@ export default function Steps({
 
 	
 	return (
-		    <div className="flex flex-col h-[90vh] gap-1 px-2 text-white overflow-y-scroll ">	
+		    <div className="flex flex-col h-[90vh] gap-1  text-white overflow-y-scroll ">	
 			      	    <Step 
 			      	          step={step} 
 			      	          stepSelect={stepSelect}
@@ -104,16 +105,17 @@ export default function Steps({
 			      	          isContextEditing={isContextEditing}
 			      	          editContext={editContext}
 			      	          contextIndex={contextIndex}
+			      	          branchName={branchName}
 
 			      	    />
 
-			      	 	<StepHandler 
+			      	 	{/*<StepHandler 
 			      	 	      addStep={addStep} 
 			      	 	      deleteStep={deleteStep}
 			      	 	      editStep={editStep}
 			      	          isContextEditing={isContextEditing}
 
-			      	 	/>
+			      	 	/>*/}
 		    </div>
 		)
 }

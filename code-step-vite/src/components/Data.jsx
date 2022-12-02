@@ -5,7 +5,7 @@ const Data= [{
                  'description':'some random short description with length 200 words',
                  'notes':"",
                  'bugs' :"",
-                 "task" :"",
+                 "task" :[],
                  'data':{   
     	                 'id':0,
                          'parent_id':null,
