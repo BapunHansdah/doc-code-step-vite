@@ -24,7 +24,6 @@ export default function(){
 	 		alert("username can't be empty")
 	 		return;
 	 	}
-	 	console.log(token)
 	 	if(token.length <=0){
 	 		setErrMsg({msg:"Limited !! Add token to get more response",color:"bg-blue-500"})
 	 	}
@@ -34,7 +33,7 @@ export default function(){
                'Authorization': (token ? `token ${token}` : "") 
          }
         }).then((res)=>{
-        	   console.log(res.data)
+            setErrMsg({msg:'success',color:'bg-green-500'})
  		      setRepo(res.data)
  		      return res.data
  	     }).catch((err)=>{
@@ -57,7 +56,7 @@ export default function(){
 
 	return(
 		  <div className="flex h-[600px] items-center justify-center">
-              <div className="max-w-md w-full gap-5 flex flex-col">
+              <div className="max-w-md w-full gap-5 flex flex-col px-2">
                  <div className="text-2xl">Find Github User</div>
                  <div className={`${errMsg.color} p-2 text-white text-center font-bold ${errMsg.msg ? "block":"hidden"}`}>{errMsg.msg}</div>
                  <div className="flex w-full flex-col gap-5">

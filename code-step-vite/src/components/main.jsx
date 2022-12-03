@@ -57,7 +57,6 @@ export default function Main() {
 		setSelectedTab(tabIndex)
 
 	}
-	console.log(userInfo)
 ///select current Tab
 	function tabChangeHandle(e){
 		setSelectedTab(parseInt(e.target.value))
@@ -91,6 +90,7 @@ export default function Main() {
 		       setBranch(res.data)
 		    }).catch((err)=>{
 		       setErrMsg(err.response.data.message)
+		       alert(err.response.data.message)
 		       return navigate('/error')
 	 	     })
   }
@@ -102,11 +102,10 @@ export default function Main() {
                   'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
             } 
             }).then((res) => {
-     //  console.log(res.data)
-               setStep(res.data)
+                setStep(res.data)
              }).catch((err)=>{
              	setErrMsg(err.response.data.message)
-           	    console.log(err.response.data.message)
+             	alert(err.response.data.message)
 	 	     })
   }
   //function to get explorer
@@ -119,7 +118,7 @@ export default function Main() {
             setFile(res.data.tree)
         }).catch((err)=>{
         	   setErrMsg(err.response.data.message)
-           	   console.log(err.response.data.message)
+        	   alert(err.response.data.message)
 	 	})
   }
 
@@ -134,7 +133,7 @@ function getContent(url,path){
               setContent(atob(res.data.content))
         }).catch((err)=>{
         	   setErrMsg(err.response.data.message)
-           	   console.log(err.response.data.message)
+        	   alert(err.response.data.message)
 	 	})
   }
 
@@ -162,16 +161,22 @@ function getContent(url,path){
      const root = {key:userInfo.repo,children: to_tree(new_data),info:{"0":{url:""}}}
 
 	
+	//function to logout
+	 function logout(){
+	 	localStorage.removeItem('info')
+	 	return navigate('/')
+	 } 
+
 	return(
 		   <div className="p-2 relative">
 {/*----------------------------------------------header-----------------------------------------------------------------*/}
 
 		   <div className="p-4 border text-blue-500 bg-white flex justify-between shadow-xl">
 		   	  <div className="font-bold">
-		   	  	logo
-		   	  </div>
-		   	  <div className="flex gap-2">
 		   	    <div onClick={openSideBar} className="cursor-pointer flex item-center"><TfiLayoutMenuV size={20}/></div>
+		   	  </div>
+		   	  <div className="flex gap-5">
+		   	    <div onClick={logout} className="font-bold cursor-pointer">Log Out</div>
 		   	  </div>
 		   </div>
 		   <div className="flex h-[90vh] gap-1 mt-2">
