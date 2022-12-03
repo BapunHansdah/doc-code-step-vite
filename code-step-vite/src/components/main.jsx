@@ -3,7 +3,7 @@ import {useState,useEffect} from 'react'
 import uniqid from 'uniqid';
 import axios from 'axios'
 import {TfiLayoutMenuV} from 'react-icons/tfi'
-
+import {useNavigate} from 'react-router-dom'
 
 ///tabs
 import  Tabs from './Tabs/tab'
@@ -26,9 +26,9 @@ import Branch from './Branches/branch'
 
 export default function Main() {
 	const [userInfo,setUserInfo] =useState(()=>{
-		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",repo:"todo-mern"}
+		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",token:"",repo:"todo-mern"}
 	})
-	const [branch,setBranch] = useState([{name:"branch1"},{name:"branch2"},{name:"branch3"}])
+	const [branch,setBranch] = useState([])
 	const [step,setStep] = useState([]) //1
 	const [selectedStep,setSelectedStep] = useState(null) //2
 	const [selectedTab,setSelectedTab] = useState(0) //3
@@ -41,6 +41,10 @@ export default function Main() {
     const [content,setContent] = useState("")
     const [path,setPath] =useState("")
 
+    const [errMsg,setErrMsg] = useState("")
+    // const [githubuserInfo.token,setGitHubuserInfo.token] = useState("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")
+
+    const navigate = useNavigate()
 
 ///select current Step
 	function stepSelect(stepIndex,url){
@@ -53,6 +57,7 @@ export default function Main() {
 		setSelectedTab(tabIndex)
 
 	}
+	console.log(userInfo)
 ///select current Tab
 	function tabChangeHandle(e){
 		setSelectedTab(parseInt(e.target.value))
@@ -77,32 +82,60 @@ export default function Main() {
 
     ///function to get branches from api
 	function getBranchs() {
-    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/branches`).then((res) => {
-      // console.log(res.data)
-     setBranch(res.data)
-    })
+    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/branches`,{
+    	'headers': {
+                  'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
+        }
+		    }).then((res) => {
+		      // console.log(res.data)
+		       setBranch(res.data)
+		    }).catch((err)=>{
+		       setErrMsg(err.response.data.message)
+		       return navigate('/error')
+	 	     })
   }
 
   //function to set Current branch commit
   function getCommits(name) {
-    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/commits?sha=${name}`).then((res) => {
+    axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/commits?sha=${name}`,{
+    	'headers': {
+                  'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
+            } 
+            }).then((res) => {
      //  console.log(res.data)
-      setStep(res.data)
-    })
+               setStep(res.data)
+             }).catch((err)=>{
+             	setErrMsg(err.response.data.message)
+           	    console.log(err.response.data.message)
+	 	     })
   }
   //function to get explorer
   function getTree(commitUrl) {
-    axios.get(`${commitUrl}?recursive=1`).then((res) => {
-      setFile(res.data.tree)
-    })
+    axios.get(`${commitUrl}?recursive=1`,{
+    	'headers': {
+                  'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
+            } 
+        }).then((res) => {
+            setFile(res.data.tree)
+        }).catch((err)=>{
+        	   setErrMsg(err.response.data.message)
+           	   console.log(err.response.data.message)
+	 	})
   }
 
 
 function getContent(url,path){
 	setPath(path)
-    axios.get(url).then((res)=>{
-       setContent(atob(res.data.content))
-    })
+    axios.get(url,{
+    	'headers': {
+                  'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
+         }
+        }).then((res)=>{
+              setContent(atob(res.data.content))
+        }).catch((err)=>{
+        	   setErrMsg(err.response.data.message)
+           	   console.log(err.response.data.message)
+	 	})
   }
 
     /// function to nest tree data of github
