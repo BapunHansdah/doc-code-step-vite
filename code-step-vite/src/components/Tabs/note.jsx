@@ -1,4 +1,8 @@
-export default function NoteComponent(){
+import {useState,useEffect} from 'react'
+
+export default function NoteComponent({data}){
+
+
 		return (
 			  <>Note</>
 			)

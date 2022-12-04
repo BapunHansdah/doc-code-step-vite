@@ -34,6 +34,7 @@ export default function Main() {
 	const [selectedTab,setSelectedTab] = useState(0) //3
 	const [toggleSideBar,setToggleSideBar] = useState(true) //4
 	const [branchName,setBranchName] = useState("")
+	const [issues,setIssues] = useState([])
     //step controller
 
     const [file, setFile] = useState([])
@@ -77,6 +78,7 @@ export default function Main() {
 
 	useEffect(()=>{
           getBranchs()
+          getIssues()
 	},[])
 
     ///function to get branches from api
@@ -160,6 +162,27 @@ function getContent(url,path){
      var new_data = file.map(function(x) { return { ...x, '_path': JSON.parse(JSON.stringify(x.path.split('/'))) } })
      const root = {key:userInfo.repo,children: to_tree(new_data),info:{"0":{url:""}}}
 
+
+     function getJSON(){
+		axios.get("").then((res)=>{
+			console.log(res)
+		})
+	}
+
+      ///function to get branches from api
+	function getIssues() {
+       axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/issues`,{
+    	  'headers': {
+                  'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
+            }
+		    }).then((res) => {
+		       setIssues(res.data)
+		    }).catch((err)=>{
+		       setErrMsg(err.response.data.message)
+		       alert(err.response.data.message)
+	 	     })
+     }
+
 	
 	//function to logout
 	 function logout(){
@@ -185,7 +208,7 @@ function getContent(url,path){
 
            {/*for device more than larger screen*/}
 
-		   <div className={`${toggleSideBar ? "hidden lg:block lg:w-2/12":"hidden"}`}>
+		   <div className={`${toggleSideBar ? "hidden lg:block lg:w-2/12":"hidden"} bg-white`}>
 	                      <Branch
 	                          branch={branch}
 	                          branchChangeHandle={branchChangeHandle}   
@@ -204,7 +227,7 @@ function getContent(url,path){
 
            {/*for device less than larger screen*/}
 
-		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"} z-10 w-1/2 bg-white absolute shadow-2xl`}>
+		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"} h-[90vh] z-10 w-1/2 bg-white absolute shadow-2xl`}>
 		              <Branch
 	                          branch={branch}
 	                          branchChangeHandle={branchChangeHandle}   
@@ -231,6 +254,7 @@ function getContent(url,path){
 			      	    <Tabs 
 			      	       tabSelect={tabSelect}
 			      	       selectedTab={selectedTab}
+			      	       issues={issues}
 			      	    />
 		      	    </div>
 		      	 </div>
@@ -252,7 +276,7 @@ function getContent(url,path){
 		      	 	  selectedTab===0 ? <File root={root} getContent={getContent} content={content} path={path}/> : 
 		      	 	  selectedTab===1 ? <Task/> : 
 		      	 	  selectedTab===2 ? <Note/> : 
-		      	 	  selectedTab===3 ? <Bug/>  :
+		      	 	  selectedTab===3 ? <Bug issues={issues}/>  :
 		      	 	  <Question/> 
 		      	 	}
 		      	 </div>

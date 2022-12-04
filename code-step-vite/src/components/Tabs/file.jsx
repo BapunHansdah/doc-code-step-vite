@@ -23,15 +23,15 @@ export default function FileComponent({root,getContent,content,path}){
 // `/${path.length >=10  ? '...' + path.substring(path.length,10)  : path}`
 		return (
 			  <div className="w-full">
-			     <div className="w-full grid-cols-2 justify-between flex px-2">
-			        <div onClick={()=>toggleBlock("explore")}className="font-semibold w-full md:w-5/12  md:overflow-auto bg-red-400 p-1 text-center break-all text-sm flex flex-wrap text-white">Explorer</div>
-			        <div onClick={()=>toggleBlock("code")}className="font-semibold w-full bg-orange-400 p-1  text-center text-sm text-white break-all">{path}</div>
+			     <div className="w-full grid-cols-2 justify-between flex ">
+			        <div onClick={()=>toggleBlock("explore")}className={`font-semibold w-full md:w-5/12 ${exploreBlock?"bg-red-400":"bg-black"}  md:overflow-auto md:bg-red-400 p-1 text-center text-sm flex flex-wrap text-white cursor-default`}>Explorer</div>
+			        <div onClick={()=>toggleBlock("code")}className={`font-semibold w-full md:bg-orange-400 ${!exploreBlock?"bg-orange-400 ":"bg-black"} p-1 text-center text-sm text-white cursor-default`}>{path}</div>
 			     </div>
-			  <div className="w-full flex items-center px-2">
+			  <div className="w-full flex items-center">
 
 			     <div className="flex w-full grid-cols-2 justify-between">
 			         <div className={`w-full md:w-5/12  overflow-auto ${exploreBlock? "block md:block" : "hidden md:block"}`}>
-			             <div className="text-sm h-[500px] bg-red-100 border-r border-red-400 overflow-scroll p-2">
+			             <div className="text-sm h-[500px] border-r border-red-400 overflow-scroll p-2">
 			             	  <Explore exploreData={root} getContent={getContent}/>
 			             </div>
 			         </div>

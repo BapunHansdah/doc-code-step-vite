@@ -7,7 +7,7 @@ export default function(){
      const [token,setToken] = useState("")
      const [repo,setRepo] = useState([])
      const [repoName,setRepoName] = useState("")
-    const [errMsg,setErrMsg] = useState({msg:"",color:""})
+     const [errMsg,setErrMsg] = useState({msg:"",color:""})
 
      
      const navigate = useNavigate()

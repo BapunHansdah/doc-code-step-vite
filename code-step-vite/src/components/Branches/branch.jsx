@@ -1,7 +1,7 @@
 export default function Branch({branch,branchSelect,branchChangeHandle}){
 	return(
 		  <div className="border mb-2">
-		             	<select type="option"  onChange={branchChangeHandle} className="w-full p-2 bg-green-300 text-black" placeholder="hello" >
+		             	<select type="option"  onChange={branchChangeHandle} className="w-full p-2 text-black" placeholder="hello" >
 							      	          <option className="bg-white text-black" value={""}>Select Branch</option>
 
 						  {

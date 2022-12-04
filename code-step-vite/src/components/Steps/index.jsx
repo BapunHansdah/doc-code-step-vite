@@ -94,7 +94,7 @@ export default function Steps({
 
 	
 	return (
-		    <div className="flex flex-col h-[90vh] gap-1  text-white overflow-y-scroll ">	
+		    <>	
 			      	    <Step 
 			      	          step={step} 
 			      	          stepSelect={stepSelect}
@@ -116,6 +116,6 @@ export default function Steps({
 			      	          isContextEditing={isContextEditing}
 
 			      	 	/>*/}
-		    </div>
+		    </>
 		)
 }

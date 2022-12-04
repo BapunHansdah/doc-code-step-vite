@@ -1,7 +1,9 @@
-export default function TaskComponent(){
+import {useState,useEffect} from 'react'
+export default function TaskComponent({data}){
+
 		return (
 			  <div>
-			     task
+			     
 			  </div>
 			)
 	}
