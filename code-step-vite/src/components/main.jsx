@@ -91,6 +91,7 @@ export default function Main() {
 		      // console.log(res.data)
 		       setBranch(res.data)
 		    }).catch((err)=>{
+		       console.log(err)
 		       setErrMsg(err.response.data.message)
 		       alert(err.response.data.message)
 		       return navigate('/error')
@@ -106,6 +107,7 @@ export default function Main() {
             }).then((res) => {
                 setStep(res.data)
              }).catch((err)=>{
+             	console.log(err)
              	setErrMsg(err.response.data.message)
              	alert(err.response.data.message)
 	 	     })
@@ -198,6 +200,7 @@ function getContent(url,path){
 		   	  <div className="font-bold">
 		   	    <div onClick={openSideBar} className="cursor-pointer flex item-center"><TfiLayoutMenuV size={20}/></div>
 		   	  </div>
+		   	  <div className="font-bold uppercase">{userInfo.repo}</div>
 		   	  <div className="flex gap-5">
 		   	    <div onClick={logout} className="font-bold cursor-pointer">Log Out</div>
 		   	  </div>
@@ -265,6 +268,7 @@ function getContent(url,path){
 		      	    <div className="flex">
 		      	    	<TabsMobile 
 		      	    	  tabChangeHandle={tabChangeHandle}
+		      	    	  issues={issues}
 		      	    	/>
 		      	    </div>
 		      	 </div>

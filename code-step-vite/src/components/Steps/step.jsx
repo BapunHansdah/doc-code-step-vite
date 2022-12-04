@@ -27,7 +27,7 @@ export default function Step({
 	                                         <div  
 	                                               onClick={()=>stepSelect(i,s.commit.tree.url)} 
 	                                               // onDoubleClick={()=>editContext(i,s.commit.message)}
-	                                               className={`flex justify-between shadow border hover:border-blue-500 ${i === selectedStep ? "bg-blue-500 text-white hover:scale-95":"bg-white text-black"} transition-all px-2 hover:bg-opacity-90 cursor-pointer`}>
+	                                               className={`flex justify-between shadow border hover:border-blue-500 ${i === selectedStep ? "bg-blue-500 text-white hover:scale-95":"bg-white text-black"} transition-all p-2 hover:bg-opacity-90 cursor-pointer`}>
 	                                               {i === selectedStep ? s.commit.message : s.commit.message.length >=10 ? s.commit.message.slice(0,10)+"..." : s.commit.message} 
 	                                               
 	                                         </div>

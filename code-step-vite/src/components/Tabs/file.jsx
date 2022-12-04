@@ -31,7 +31,7 @@ export default function FileComponent({root,getContent,content,path}){
 
 			     <div className="flex w-full grid-cols-2 justify-between">
 			         <div className={`w-full md:w-5/12  overflow-auto ${exploreBlock? "block md:block" : "hidden md:block"}`}>
-			             <div className="text-sm h-[500px] border-r border-red-400 overflow-scroll p-2">
+			             <div className="text-sm h-[500px] border-r border-red-400 overflow-auto p-2">
 			             	  <Explore exploreData={root} getContent={getContent}/>
 			             </div>
 			         </div>

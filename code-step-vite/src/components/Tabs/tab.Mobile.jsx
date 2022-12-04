@@ -1,14 +1,14 @@
 import TabArr from './registerTab'
-export default function TabsMobile({tabChangeHandle}){
+export default function TabsMobile({tabChangeHandle,issues}){
 
 	return(
 		  <>
-           <select type="option"  onChange={tabChangeHandle} className="w-full p-2 " placeholder="hello" >
+           <select type="option"  onChange={tabChangeHandle} className="w-full p-2"  >
 
 		  {
 		  	TabArr.map((t,i)=>{
                  return (
-			      	    	  <option key={i} value={i}>{t.name}</option>
+			      	    	  <option className="" key={i} value={i}>{i===3?issues.length : "" }&nbsp;{t.name}</option>
                  	)
 		  	})
 		  }
