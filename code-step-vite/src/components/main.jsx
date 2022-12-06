@@ -161,6 +161,7 @@ function getContent(url,path){
 		    }
 		  });		
      }
+     
      var new_data = file.map(function(x) { return { ...x, '_path': JSON.parse(JSON.stringify(x.path.split('/'))) } })
      const root = {key:userInfo.repo,children: to_tree(new_data),info:{"0":{url:""}}}
 

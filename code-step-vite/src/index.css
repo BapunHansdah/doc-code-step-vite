@@ -17,6 +17,12 @@ input[type="file"] {
 
 input{
   background-color: skyblue;
+      overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 /* width */
 ::-webkit-scrollbar {
