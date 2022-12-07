@@ -116,7 +116,7 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 				     	    </div>
 {/*----------------------------------------------------------info--------------------------------------------*/}
 
-				     	    <div className={`${m.read ? "block":"hidden"} h-${setHeight} overflow-y-auto mt-2`}>
+				     	    <div className={`${m.read ? "block":"hidden"} ${setHeight} overflow-y-auto mt-2`}>
 				     	  	    {haveLabel ? <label className="font-semibold">Question</label>: <></>}
 				     	     	<div className={`font-semibold mt-1 w-full p-1 text-sm break-all`}>{m.title}</div>
 				     	  	    {/*{haveLabel ? <label className="font-semibold">Question</label>: <></>}*/}
@@ -127,7 +127,7 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 				     	  	    }
 					     	  	</div>
 {/*----------------------------------------------------------edit--------------------------------------------*/}
-				     	  	<div className={`${m.read ? "hidden":"block"} h-${setHeight} mt-2`}>
+				     	  	<div className={`${m.read ? "hidden":"block"} ${setHeight} mt-2`}>
 				     	  	   {haveLabel ? <label className="font-semibold">Question</label>: <></>}
 				     	  	   <input 
 				     	  	         className="font-semibold mt-1 w-full p-1 text-sm bg-white"  

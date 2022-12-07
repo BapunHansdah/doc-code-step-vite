@@ -27,23 +27,23 @@ export default function FileComponent({root,getContent,content,path}){
 			        <div onClick={()=>toggleBlock("explore")}className={`font-semibold w-full md:w-5/12 ${exploreBlock?"bg-red-400":"bg-black"}  md:overflow-auto md:bg-red-400 p-1 text-center text-sm flex flex-wrap text-white cursor-default`}>Explorer</div>
 			        <div onClick={()=>toggleBlock("code")}className={`font-semibold w-full md:bg-orange-400 ${!exploreBlock?"bg-orange-400 ":"bg-black"} p-1 text-center text-sm text-white cursor-default`}>{path}</div>
 			     </div>
-			  <div className="w-full flex items-center">
+			  <div className="w-full flex items-center h-full">
 
-			     <div className="flex w-full grid-cols-2 justify-between">
-			         <div className={`w-full md:w-5/12  overflow-auto ${exploreBlock? "block md:block" : "hidden md:block"}`}>
-			             <div className="text-sm h-[500px] border-r border-red-400 overflow-auto p-2">
+			     <div className="flex w-full h-[80vh] grid-cols-2 justify-between">
+			         <div className={`w-full h-full md:w-5/12  overflow-auto ${exploreBlock? "block md:block" : "hidden md:block"}`}>
+			             <div className="text-sm h-full border-r border-red-400 overflow-auto p-2">
 			             	  <Explore exploreData={root} getContent={getContent}/>
 			             </div>
 			         </div>
 			  	     <div className={`w-full overflow-auto ${exploreBlock? "hidden md:block" : "block md:block"}`}>
-			  	          <div className="h-[500px] bg-orange-100 border-l border-orange-400">
+			  	          <div className="h-full bg-orange-100 border-l border-orange-400">
 			  	          	 	<AceEditor
 								    mode="javascript"
 								    theme="chaos"
 								    value={content}
 								    name="UNIQUE_ID_OF_DIV"
 								    readOnly={true}
-								    style={{width:'100%'}}
+								    style={{width:'100%',height:'100%'}}
 								    wrapEnabled={true}
 								    editorProps={{ $blockScrolling: false }}
                                 />

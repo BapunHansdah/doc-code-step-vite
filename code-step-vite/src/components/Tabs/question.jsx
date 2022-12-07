@@ -82,8 +82,6 @@ export default function QuestionComponent(){
 			  	     	  	})
 			  	     	  }
 			  	     	  </select>
-			  	     	  {/*<BsFilterSquareFill/>
-			  	     	    filter*/}
 			  	     	  </div>
 			  	     </div>
 
@@ -96,7 +94,7 @@ export default function QuestionComponent(){
 				        setTasks={setQuestions} 
 				        taskTab={taskTab} 
 				        setDynamicBackgroundColor={false}
-				        setHeight={96}
+				        setHeight={"h-96"}
 				        haveIconName={true}
 				        haveAnswer={true}
 				        haveLabel={true}

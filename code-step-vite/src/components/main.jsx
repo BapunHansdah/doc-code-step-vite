@@ -269,7 +269,7 @@ function getContent(url,path){
 
 		      	 <div className="w-full bg-white block  md:hidden  shadow-2xl relative">
 		      	   <div className="flex justify-center w-full">
-		      	    <div className="flex h-10 fixed bottom-0 w-full mx-auto max-w-full px-2">
+		      	    <div className="flex h-10 fixed bottom-0 w-full mx-auto max-w-full px-2 z-10">
 		      	    	{/*<TabsMobile 
 		      	    	  tabChangeHandle={tabChangeHandle}
 		      	    	  issues={issues}
@@ -285,7 +285,7 @@ function getContent(url,path){
 
 {/*----------------------------------------------contents-----------------------------------------------------------------*/}
 
-		      	 <div className="w-full h-[550px] bg-white flex  shadow-2xl shadow">
+		      	 <div className="w-full h-[90vh] bg-white flex  shadow-2xl shadow">
 		      	 	{
 		      	 	  selectedTab===0 ? <File root={root} getContent={getContent} content={content} path={path}/> : 
 		      	 	  selectedTab===1 ? <Task/> : 

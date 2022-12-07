@@ -81,7 +81,7 @@ export default function TaskComponent({data}){
 				        setTasks ={setTasks} 
 				        taskTab={taskTab} 
 				        setDynamicBackgroundColor={true}
-				        setHeight={40}
+				        setHeight={"h-40"}
 				        haveIconName={false}
 				        haveAnswer={false}
 				        setInfoBackground={""}
