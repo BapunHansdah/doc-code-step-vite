@@ -206,18 +206,18 @@ function getContent(url,path){
 		   	    <div onClick={logout} className="font-bold cursor-pointer">Log Out</div>
 		   	  </div>
 		   </div>
-		   <div className="flex h-[90vh] gap-1 mt-2">
+		   <div className="flex gap-1 mt-2">
 
 {/*----------------------------------------------steps-----------------------------------------------------------------*/}
 
            {/*for device more than larger screen*/}
 
 		   <div className={`${toggleSideBar ? "hidden lg:block lg:w-2/12":"hidden"} bg-white`}>
-	                      <Branch
+	                  <Branch
 	                          branch={branch}
 	                          branchChangeHandle={branchChangeHandle}   
 			              />
-                     <div className=" flex flex-col h-[90vh] gap-1 text-white overflow-y-scroll">	
+                  <div className="flex flex-col h-[530px] gap-1 text-white overflow-y-scroll">	
 			      	    <Steps 
 			      	          step={step} 
 			      	          setStep={setStep}
@@ -231,11 +231,12 @@ function getContent(url,path){
 
            {/*for device less than larger screen*/}
 
-		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"} h-[90vh] z-10 w-1/2 bg-white absolute shadow-2xl`}>
+		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"}  z-10 w-1/2 bg-white absolute shadow-2xl`}>
 		              <Branch
 	                          branch={branch}
 	                          branchChangeHandle={branchChangeHandle}   
 			          />
+			          <div className="overflow-y-scroll h-[530px]">
 		              <Steps 
 			      	          step={step}
 			      	          setStep={setStep} 
@@ -244,6 +245,7 @@ function getContent(url,path){
 			      	          selectedStep={selectedStep}
 			      	          setSelectedStep={setSelectedStep}
 			      	    />
+			      	   </div>
 	      	           
 			 </div>
 {/*----------------------------------------------tabs-----------------------------------------------------------------*/}
@@ -254,7 +256,7 @@ function getContent(url,path){
            {/*for device more than larger screen*/}
 
 		      	 <div className="w-full hidden md:block">
-		      	   <div className="flex h-full h-10 justify-around">
+		      	   <div className="flex h-10 justify-around">
 			      	    <Tabs 
 			      	       tabSelect={tabSelect}
 			      	       selectedTab={selectedTab}
@@ -265,12 +267,19 @@ function getContent(url,path){
 
            {/*for device less than larger screen*/}
 
-		      	 <div className="w-full bg-white block  md:hidden  shadow-2xl">
-		      	    <div className="flex">
-		      	    	<TabsMobile 
+		      	 <div className="w-full bg-white block  md:hidden  shadow-2xl relative">
+		      	   <div className="flex justify-center w-full">
+		      	    <div className="flex h-10 fixed bottom-0 w-full mx-auto max-w-full px-2">
+		      	    	{/*<TabsMobile 
 		      	    	  tabChangeHandle={tabChangeHandle}
 		      	    	  issues={issues}
-		      	    	/>
+		      	    	/>*/}
+		      	    	<Tabs 
+			      	       tabSelect={tabSelect}
+			      	       selectedTab={selectedTab}
+			      	       issues={issues}
+			      	    />
+		      	    </div>
 		      	    </div>
 		      	 </div>
 
