@@ -14,7 +14,10 @@ import InfoCard from '../utils/infoCard'
 
 export default function TaskComponent({data}){
 
-	    const [ tasks , setTasks ] = useState([])
+	    const [ tasks , setTasks ] = useState(()=>{
+             const taskObj = JSON.parse(localStorage.getItem('task')) || []
+             return taskObj 
+         })
 	    const [ status , setStatus ] = useState(0)
 	    const [ taskInfo,setTaskInfo] = useState({title:"",description:""})
 	    const [ taskTab,setTaskTab ] = useState(0)
@@ -35,7 +38,7 @@ export default function TaskComponent({data}){
 
 	    function addTaskSubmit(e){
 	    	e.preventDefault()
-	    	console.log(e.target)
+	    	// console.log(e.target)
 	    	if(taskInfo.title.length <= 0 ){
 	    		alert("input field cant be empty")
 	    		return;
@@ -50,6 +53,13 @@ export default function TaskComponent({data}){
 	    function filterTasks(status){
 	    	setTaskTab(status)
 	    }
+
+
+	    useEffect(()=>{
+           // console.log("saved to localStorage")
+           localStorage.setItem('task',JSON.stringify(tasks))       
+         },[tasks])
+
 
 
         const taskFiltertabs = [{icons:<BsBorderAll/>,color:"bg-blue-500"},{icons:<AiFillCheckSquare/>,color:"bg-red-500"},{icons:<AiFillCheckSquare/>,color:"bg-orange-500"},{icons:<AiFillCheckSquare/>,color:"bg-green-500"}]

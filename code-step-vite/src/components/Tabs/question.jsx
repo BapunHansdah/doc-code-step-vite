@@ -3,7 +3,7 @@ import {MdOutlineQuestionAnswer} from 'react-icons/md'
 import {AiFillPlusSquare} from 'react-icons/ai'
 import {AiFillMinusSquare} from 'react-icons/ai'
 import {MdDescription} from 'react-icons/md'
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import {BiEditAlt} from 'react-icons/bi'
 import {RiDeleteBin4Line} from 'react-icons/ri'
 import Form from '../utils/Form'
@@ -19,7 +19,10 @@ export default function QuestionComponent(){
 	    const [expand,setExpand] = useState(true)
 
 	    const [ QuestionInfo,setQuestionInfo] = useState({title:"",description:"",answer:""})
-	    const [ questions , setQuestions ] = useState([])
+	    const [ questions , setQuestions ] = useState(()=>{
+	    	const questionObj = JSON.parse(localStorage.getItem('question')) || []
+            return questionObj 
+	    })
 	    const [ taskTab,setTaskTab ] = useState(0)
 
 
@@ -40,7 +43,7 @@ export default function QuestionComponent(){
 
 	    function addQuestionSubmit(e){
 	    	e.preventDefault()
-	    	console.log(e.target)
+	    	// console.log(e.target)
 	    	if(QuestionInfo.title.length <= 0 ){
 	    		alert("input field cant be empty")
 	    		return;
@@ -58,6 +61,11 @@ export default function QuestionComponent(){
 	    	setTaskTab(parseInt(e.target.value))
 
 	    }
+
+	    useEffect(()=>{
+           // console.log("saved to localStorage")
+           localStorage.setItem('question',JSON.stringify(questions))       
+         },[questions])
 
 
         const options= [{name:"All"},{name:"Unsolved"},{name:"Solved"}]

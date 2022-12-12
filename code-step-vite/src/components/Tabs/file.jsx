@@ -27,9 +27,9 @@ export default function FileComponent({root,getContent,content,path}){
 			        <div onClick={()=>toggleBlock("explore")}className={`font-semibold w-full md:w-5/12 ${exploreBlock?"bg-red-400":"bg-black"}  md:overflow-auto md:bg-red-400 p-1 text-center text-sm flex flex-wrap text-white cursor-default`}>Explorer</div>
 			        <div onClick={()=>toggleBlock("code")}className={`font-semibold w-full md:bg-orange-400 ${!exploreBlock?"bg-orange-400 ":"bg-black"} p-1 text-center text-sm text-white cursor-default`}>{path}</div>
 			     </div>
-			  <div className="w-full flex items-center h-full">
+			  <div className="w-full flex  h-full">
 
-			     <div className="flex w-full h-[80vh] grid-cols-2 justify-between">
+			     <div className="flex w-full h-[85vh] grid-cols-2 justify-between">
 			         <div className={`w-full h-full md:w-5/12  overflow-auto ${exploreBlock? "block md:block" : "hidden md:block"}`}>
 			             <div className="text-sm h-full border-r border-red-400 overflow-auto p-2">
 			             	  <Explore exploreData={root} getContent={getContent}/>

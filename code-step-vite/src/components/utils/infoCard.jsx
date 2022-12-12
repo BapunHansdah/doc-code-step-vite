@@ -65,11 +65,11 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 	    }
 
 
-
+ // console.log(tasks)
 
 	return(
 			 
-			  tasks.filter(t=> taskTab === 0 ? t : t.status.indexOf(1)=== taskTab - 1 ).map((m,i)=>{
+             tasks.filter(t=> taskTab === 0 ? t : t.status.indexOf(1)=== taskTab - 1 ).map((m,i)=>{
 			   		return(
 				         <div className={` ${setDynamicBackgroundColor ?  m.status.indexOf(1) === 0 ? "bg-red-400":  m.status.indexOf(1) === 1 ? "bg-orange-400" : "bg-green-400" : "bg-gray-300" } w-full p-2 shadow`} key={m.id}>
 				     	    <div className="flex justify-between gap-2">

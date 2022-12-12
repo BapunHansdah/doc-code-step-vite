@@ -7,11 +7,13 @@ export default function BugComponent({issues}){
 	   const [issueId,setIssueId] = useState(null)
 
 	   function expandIssue(ind){
-	   	  console.log(ind)
+	   	  // console.log(ind)
 	   	  setIssueId(ind)
 	   }
 
-	    console.log(issues)
+
+
+	    // console.log(issues)
 		return (
 			  <div className="flex w-full overflow-scroll p-2 bg-gray-100">
 			  <div className=" h-[500px] flex gap-2 flex-col w-full">

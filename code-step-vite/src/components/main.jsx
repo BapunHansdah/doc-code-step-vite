@@ -4,6 +4,7 @@ import uniqid from 'uniqid';
 import axios from 'axios'
 import {TfiLayoutMenuV} from 'react-icons/tfi'
 import {useNavigate} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 
 ///tabs
 import  Tabs from './Tabs/tab'
@@ -25,8 +26,11 @@ import Branch from './Branches/branch'
 
 
 export default function Main() {
+	// const [projects,setProjects] = useState(()=>{
+	// 	return JSON.parse(localStorage.getItem('project')) || []
+	// })
 	const [userInfo,setUserInfo] =useState(()=>{
-		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",token:"",repo:"todo-mern"}
+		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",token:"",repo:"doc-code-step-vite"}
 	})
 	const [branch,setBranch] = useState([])
 	const [step,setStep] = useState([]) //1
@@ -35,6 +39,8 @@ export default function Main() {
 	const [toggleSideBar,setToggleSideBar] = useState(true) //4
 	const [branchName,setBranchName] = useState("")
 	const [issues,setIssues] = useState([])
+	const [projectId,setProjectId] = useState(null)
+
     //step controller
 
     const [file, setFile] = useState([])
@@ -79,7 +85,12 @@ export default function Main() {
 	useEffect(()=>{
           getBranchs()
           getIssues()
+
+          // if(!containsId){
+	 	         // setProjects([...projects,{id:uniqid(),...userInfo}])        	
+          // }
 	},[])
+
 
     ///function to get branches from api
 	function getBranchs() {
@@ -91,9 +102,10 @@ export default function Main() {
 		      // console.log(res.data)
 		       setBranch(res.data)
 		    }).catch((err)=>{
-		       console.log(err)
-		       setErrMsg(err.response.data.message)
-		       alert(err.response.data.message)
+
+		          setErrMsg(err.response.data.message || err.message)
+		          alert(err.response.data.message || err.message)
+		 
 		       return navigate('/error')
 	 	     })
   }
@@ -188,10 +200,17 @@ function getContent(url,path){
 
 	
 	//function to logout
-	 function logout(){
+	 function newProject(){
 	 	localStorage.removeItem('info')
-	 	return navigate('/')
+	 	localStorage.removeItem('note')
+	 	localStorage.removeItem('task')
+	 	localStorage.removeItem('question')
+
+
+	 	return navigate('/projects')
 	 } 
+   
+
 
 	return(
 		   <div className="p-2 relative">
@@ -203,7 +222,7 @@ function getContent(url,path){
 		   	  </div>
 		   	  <div className="font-bold uppercase">{userInfo.repo}</div>
 		   	  <div className="flex gap-5">
-		   	    <div onClick={logout} className="font-bold cursor-pointer">Log Out</div>
+		   	    <div onClick={newProject} className="font-bold cursor-pointer">New</div>
 		   	  </div>
 		   </div>
 		   <div className="flex gap-1 mt-2">
@@ -298,6 +317,7 @@ function getContent(url,path){
 		      </div>
 		      </div>
 		   </div>
+		      <div className="h-10"></div>
 		   </div>
 		)
 }
