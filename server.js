@@ -24,7 +24,7 @@ app.use('/api',allRoutes)
 
 const httpServer = http.createServer(app)
 
-if(process.env.NODE_ENV==="development"){
+if(process.env.NODE_ENV==="production"){
    app.use(express.static('code-step-vite/dist'))
 
    app.get("*",(req,res)=>{
@@ -49,17 +49,3 @@ app.listen(port,()=>{
    connectDB()   
 	console.log(`app started at port ${port}`)
 })
-
-
-
-
-
-// G_CLIENT_ID=367945946573-275i74rm24fqb9vheo30sunkdk8pjbtd.apps.googleusercontent.com
-// JWT_PROJECT_SECRET=adams
-// REFRESH_TOKEN=carlsen
-// ACTIVATION_TOKEN=alaska
-// MONGO_URI=mongodb+srv://bapun:barun123@cluster0.ngyuagu.mongodb.net/?retryWrites=true&w=majority
-// G_CLIENT_SECRET=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
-// ADMIN_EMAIL=alienx121212@gmail.com
-// ACCESS_TOKEN=Holmes
-// G_REFRESH_TOKEN=1//04gaDWbaW3VriCgYIARAAGAQSNwF-L9IrYLqUIVyq-WFUWZRJ8Ngoq5f_WbOrp6wpc1G5ZaC0Hdc4TQ4w-ZTx9Dge6pznjsTZK_w
