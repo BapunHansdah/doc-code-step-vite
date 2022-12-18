@@ -24,7 +24,7 @@ app.use('/api',allRoutes)
 
 const httpServer = http.createServer(app)
 
-if(process.env.NODE_ENV==="development"){
+if(process.env.NODE_ENV==="production"){
    app.use(express.static('code-step-vite/dist'))
 
    app.get("*",(req,res)=>{
