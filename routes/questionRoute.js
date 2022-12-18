@@ -1,5 +1,5 @@
 import express from 'express'
-import {createQuestion,deleteQuestion,getAllQuestions,deleteAllQuestions,deleteAllQuestionsByProject,editQuestion} from '../controller/QuestionController.js'
+import {createQuestion,deleteQuestion,getAllQuestions,deleteAllQuestions,deleteAllQuestionsByProject,editQuestion} from '../controller/questionController.js'
 
 const router = express.Router()
 
