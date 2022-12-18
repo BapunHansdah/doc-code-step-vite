@@ -1,4 +1,8 @@
-export default function Branch({branch,branchSelect,branchChangeHandle}){
+export default function Branch({branch,branchSelect,branchChangeHandle,loading}){
+   
+	if(loading) {
+		return <div className="text-center">loading...</div>
+	}
 	return(
 		  <div className="border mb-2">
 		             	<select type="option"  onChange={branchChangeHandle} className="w-full  font-bold p-2 text-black" >

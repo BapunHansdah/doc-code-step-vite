@@ -1,4 +1,3 @@
-import {Data} from './Data'
 import {useState,useEffect} from 'react'
 import uniqid from 'uniqid';
 import axios from 'axios'
@@ -8,7 +7,6 @@ import {useParams} from 'react-router-dom'
 
 ///tabs
 import  Tabs from './Tabs/tab'
-import  TabsMobile from './Tabs/tab.Mobile'
 import  Bug from './Tabs/bug'
 import  File from './Tabs/file'
 import  Note from './Tabs/note'
@@ -32,6 +30,7 @@ export default function Main() {
 	const [userInfo,setUserInfo] =useState(()=>{
 		return JSON.parse(localStorage.getItem('info')) || {name:"BapunHansdah",token:"",repo:"doc-code-step-vite"}
 	})
+	
 	const [branch,setBranch] = useState([])
 	const [step,setStep] = useState([]) //1
 	const [selectedStep,setSelectedStep] = useState(null) //2
@@ -40,6 +39,10 @@ export default function Main() {
 	const [branchName,setBranchName] = useState("")
 	const [issues,setIssues] = useState([])
 	const [projectId,setProjectId] = useState(null)
+  const [commitloading,setcommitloading] = useState(false)
+  const [branchloading,setbranchloading] = useState(false)
+
+
 
     //step controller
 
@@ -85,26 +88,27 @@ export default function Main() {
 	useEffect(()=>{
           getBranchs()
           getIssues()
-
-          // if(!containsId){
-	 	         // setProjects([...projects,{id:uniqid(),...userInfo}])        	
-          // }
 	},[])
 
 
     ///function to get branches from api
 	function getBranchs() {
+		setbranchloading(true)
     axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/branches`,{
     	'headers': {
                   'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
         }
 		    }).then((res) => {
 		      // console.log(res.data)
+
 		       setBranch(res.data)
+		       setbranchloading(false)
+
 		    }).catch((err)=>{
 
 		          setErrMsg(err.response.data.message || err.message)
 		          alert(err.response.data.message || err.message)
+		          setbranchloading(false)
 		 
 		       return navigate('/error')
 	 	     })
@@ -112,14 +116,18 @@ export default function Main() {
 
   //function to set Current branch commit
   function getCommits(name) {
+  	setcommitloading(true)
     axios.get(`https://api.github.com/repos/${userInfo.name}/${userInfo.repo}/commits?sha=${name}`,{
     	'headers': {
                   'Authorization': (userInfo.token ? `token ${userInfo.token}` : "") 
             } 
             }).then((res) => {
+            	  // console.log(res)
                 setStep(res.data)
+                setcommitloading(false)
              }).catch((err)=>{
              	console.log(err)
+             	setcommitloading(false)
              	setErrMsg(err.response.data.message)
              	alert(err.response.data.message)
 	 	     })
@@ -180,7 +188,7 @@ function getContent(url,path){
 
      function getJSON(){
 		axios.get("").then((res)=>{
-			console.log(res)
+			// console.log(res)
 		})
 	}
 
@@ -205,9 +213,7 @@ function getContent(url,path){
 	 	localStorage.removeItem('note')
 	 	localStorage.removeItem('task')
 	 	localStorage.removeItem('question')
-
-
-	 	return navigate('/projects')
+	 	return navigate('/')
 	 } 
    
 
@@ -220,7 +226,7 @@ function getContent(url,path){
 		   	  <div className="font-bold">
 		   	    <div onClick={openSideBar} className="cursor-pointer flex item-center"><TfiLayoutMenuV size={20}/></div>
 		   	  </div>
-		   	  <div className="font-bold uppercase">{userInfo.repo}</div>
+		   	  <div className="font-bold uppercase text-center">{userInfo.repo}</div>
 		   	  <div className="flex gap-5">
 		   	    <div onClick={newProject} className="font-bold cursor-pointer">New</div>
 		   	  </div>
@@ -234,7 +240,8 @@ function getContent(url,path){
 		   <div className={`${toggleSideBar ? "hidden lg:block lg:w-2/12":"hidden"} bg-white`}>
 	                  <Branch
 	                          branch={branch}
-	                          branchChangeHandle={branchChangeHandle}   
+	                          branchChangeHandle={branchChangeHandle} 
+	                          loading={branchloading}  
 			              />
                   <div className="flex flex-col h-[530px] gap-1 text-white overflow-y-scroll">	
 			      	    <Steps 
@@ -242,6 +249,7 @@ function getContent(url,path){
 			      	          setStep={setStep}
 			      	          branchName={branchName}
 			      	          stepSelect={stepSelect}
+			      	          loading={commitloading}
 			      	          selectedStep={selectedStep}
 			      	          setSelectedStep={setSelectedStep}
 			      	    />
@@ -253,7 +261,8 @@ function getContent(url,path){
 		   <div className={`${toggleSideBar ? "block lg:hidden lg:w-2/12":"hidden"}  z-10 w-1/2 bg-white absolute shadow-2xl`}>
 		              <Branch
 	                          branch={branch}
-	                          branchChangeHandle={branchChangeHandle}   
+	                          branchChangeHandle={branchChangeHandle}  
+	                          loading={branchloading}  
 			          />
 			          <div className="overflow-y-scroll h-[530px]">
 		              <Steps 
@@ -261,6 +270,7 @@ function getContent(url,path){
 			      	          setStep={setStep} 
 			      	          branchName={branchName}
 			      	          stepSelect={stepSelect}
+			      	          loading={commitloading}
 			      	          selectedStep={selectedStep}
 			      	          setSelectedStep={setSelectedStep}
 			      	    />

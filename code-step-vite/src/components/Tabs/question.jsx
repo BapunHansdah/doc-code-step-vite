@@ -9,6 +9,8 @@ import {RiDeleteBin4Line} from 'react-icons/ri'
 import Form from '../utils/Form'
 import uniqid from 'uniqid';
 import InfoCard from '../utils/infoCard'
+import useAuth from '../useAuth'
+import axios from 'axios'
 
 
 
@@ -19,11 +21,33 @@ export default function QuestionComponent(){
 	    const [expand,setExpand] = useState(true)
 
 	    const [ QuestionInfo,setQuestionInfo] = useState({title:"",description:"",answer:""})
-	    const [ questions , setQuestions ] = useState(()=>{
-	    	const questionObj = JSON.parse(localStorage.getItem('question')) || []
-            return questionObj 
-	    })
+	    const [ questions , setQuestions ] = useState([])
 	    const [ taskTab,setTaskTab ] = useState(0)
+
+	    const {auth} = useAuth()
+
+
+
+	    async function getAllQuestions(){
+             // console.log("hello")
+	    	   try{
+	    	   	if(auth.token){
+	    	   	 await axios.get("/api/question/",{
+		 	   		'headers': {
+				                  'Authorization': (auth.token ? auth.token : "")    
+				        }
+				     }).then(res=>{
+		 	   		    // console.log(res.data)
+		 	   		    setQuestions(res.data)
+		 	          })
+		     }
+
+	    	   }catch(err){
+
+	    	   	console.log(err)
+	    	   }
+	    }
+
 
 
 
@@ -41,15 +65,34 @@ export default function QuestionComponent(){
 
 	    }
 
-	    function addQuestionSubmit(e){
+	   async function addQuestionSubmit(e){
 	    	e.preventDefault()
 	    	// console.log(e.target)
 	    	if(QuestionInfo.title.length <= 0 ){
 	    		alert("input field cant be empty")
 	    		return;
 	    	}
-	    	setQuestions([...questions,{id:uniqid(),...QuestionInfo,answer:"",status:[1,0],read:true}])
-	    	setQuestionInfo({title:"",description:"",answer:""})
+
+	    	try{
+           if(auth.token){
+		 	await axios.post("/api/question/",QuestionInfo,{
+		 	   		'headers': {
+				                  'Authorization': (auth.token ? auth.token : "")    
+				        }
+				     }).then(res=>{
+				      console.log(res.data)
+				     	setQuestions([...questions,{...res.data,answer:""}])
+				     })
+		 	}
+		 	
+	           
+	       	// setTasks([...tasks,{id:uniqid(),...taskInfo,status:[1,0,0],read:true}])
+	        setQuestionInfo({title:"",description:"",answer:""})
+	    	}catch(err){
+	    		console.log(err)
+	    	}
+
+	    	// setQuestions([...questions,{id:uniqid(),...QuestionInfo,answer:"",status:[1,0],read:true}])
 	    }
 
 	    function changeHandle(e){
@@ -62,10 +105,32 @@ export default function QuestionComponent(){
 
 	    }
 
+
+	    async function deleteAllTasks(){
+	    	try{
+           	// console.log(auth.token)
+	    		
+           await axios.delete(`api/question/deleteall`,{
+					        'headers': {
+					            'Authorization': (auth.token ? auth.token : "")    
+					        }
+					     })
+	    	 setQuestions([])
+
+	    	}catch(err){
+	    		console.log(err)
+	    	}
+
+	    }
+
 	    useEffect(()=>{
-           // console.log("saved to localStorage")
-           localStorage.setItem('question',JSON.stringify(questions))       
-         },[questions])
+	    	getAllQuestions()     
+         },[auth.token])
+
+          
+         console.log(questions)
+
+        
 
 
         const options= [{name:"All"},{name:"Unsolved"},{name:"Solved"}]
@@ -79,6 +144,10 @@ export default function QuestionComponent(){
 			  	         changeHandle={changeHandle}
                          formName={"Question"}
 			  	     />
+
+			  	     <div className="flex justify-end px-2 w-full">
+			           <button onClick={deleteAllTasks} className=" bg-red-500 px-2 text-white">Delete All Questions</button>
+                     </div>
 
 			  	     <div>
 			  	     	<div className="flex w-full p-2 justify-end mt-2 items-center gap-2 cursor-pointer">
@@ -98,6 +167,7 @@ export default function QuestionComponent(){
                    
 		         <div className="grid gap-5 w-full mt-5 overflow-y-auto">    
 			  	    <InfoCard 
+				        infoName={"question"}
 				        tasks={questions} 
 				        setTasks={setQuestions} 
 				        taskTab={taskTab} 

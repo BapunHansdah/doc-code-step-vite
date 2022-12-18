@@ -8,14 +8,64 @@ import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import {unified} from 'unified'
 import remarkParse from 'remark-parse'
+import useAuth from '../useAuth'
+import axios from 'axios'
+
 
 export default function NoteComponent({data}){
   const [showNote, setShowNote] = useState(false);
-  const [notes,setNotes] = useState(()=>{
-    const noteObj = JSON.parse(localStorage.getItem('note')) || ""
-    return noteObj
-  })  
+  const [noteList,setNoteList] = useState([])
+  const [notes,setNotes] = useState("")  
   const [showtextEditor,setShowtextEditor] = useState(false) 
+  const [checkNoteCount,setCheckNoteCount] = useState(0)
+  const [loading,setLoading] = useState(false)
+  const {auth} = useAuth()
+
+  // console.log(auth)
+  
+  async function addNote(){
+      try{
+                if(auth.token){
+                 await axios.post("/api/note/",{notes:notes},{
+                    'headers': {
+                                  'Authorization': (auth.token ? auth.token : "")    
+                        }
+                     }).then(res=>{
+                        setNotes("")
+                        setNoteList([...noteList,{...res.data}])
+                        setCheckNoteCount(1)
+                     })
+             }
+
+               }catch(err){
+                console.log(err)
+               }
+   }
+
+
+   async function getNote(){
+      setLoading(true)
+      try{
+                if(auth.token){
+                 await axios.get("/api/note/",{
+                    'headers': {
+                                  'Authorization': (auth.token ? auth.token : "")    
+                        }
+                     }).then(res=>{
+                        // console.log(res.data)
+                        setNoteList(res.data)
+                        setLoading(false)
+                        setCheckNoteCount(res.data.length)
+                        if(res.data.length){
+                           setNotes(res.data[0].notes)
+                        }
+                      })
+             }
+
+               }catch(err){
+                console.log(err)
+               }
+   }
 
   function toggleNote(){
     setShowtextEditor(!showtextEditor)
@@ -24,30 +74,67 @@ export default function NoteComponent({data}){
   function handleNoteInput(e){
       setNotes(e.target.value)
   }
+async function deleteNote(id){
 
-  function save(){
-    
+            try{ 
+                    await axios.delete(`api/note/delete/${id}`,{
+                    'headers': {
+                                'Authorization': (auth.token ? auth.token : "")    
+                               }
+                    }).then(res=>{
+                        console.log(res.data)
+                    })
+                    setCheckNoteCount(0)
+                    
+            }catch(err){
+                console.log(err)
+            }
+      
+  }
+
+
+
+
+  async function save(id){
+             try{ 
+                    await axios.put(`api/note/edit/${id}`,{notes:notes},{
+                    'headers': {
+                                'Authorization': (auth.token ? auth.token : "")    
+                               }
+                    }).then(res=>{
+                        console.log(res.data)
+                    })
+            }catch(err){
+                console.log(err)
+            }
   }
 
   useEffect(()=>{
-     // console.log("saved to localStorage")
-     localStorage.setItem('note',JSON.stringify(notes))       
-  },[notes])
+    getNote()
+  },[auth.token])
+
+    if(loading) return <>loading...</>
+
+      if(!checkNoteCount) return (
+        <div className="w-full flex justify-center items-center ">
+          <div className="flex flex-col gap-5">
+             <span className="text-2xl">You have note made any note yet !</span>
+             <div className="text-center"><button className="bg-blue-500 p-2 text-white" onClick={addNote}> Add Note </button></div>
+          </div>
+        </div>
+    )
+
+        
 
    
-
-
-
-
-  
-
-
-
 		return (
 			  <div className={`${showNote ? 'hidden': 'block'} w-full h-full`}>
                   <div className="font-bold p-1 bg-blue-500 shadow border-r text-sm text-white flex justify-between">
                          <span>{!showtextEditor?"Notes":"Editor"}</span>
-                         <span className="px-1 bg-red-500 text-white cursor-pointer" onClick={save}>save</span>
+                         <div className="flex gap-5">
+                            <span className="px-1 text-green-500 bg-white cursor-pointer font-regular" onClick={()=>save(noteList[0]._id)}>save</span>
+                            <span className="px-1 bg-red-500 text-white cursor-pointer font-regular" onClick={()=>deleteNote(noteList[0]._id)}>delete</span>
+                         </div>
                   </div>
                   <div className="h-full mx-auto relative">
                    <div className="h-full">

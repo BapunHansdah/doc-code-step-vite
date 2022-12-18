@@ -14,7 +14,8 @@ export default function Steps({
 			      	          stepSelect,
 			      	          selectedStep,
 			      	          setSelectedStep,
-			      	          branchName
+			      	          branchName,
+			      	          loading
 			      	      }){
 
 	const [stepContext,setStepContext] = useState("") //5
@@ -106,6 +107,7 @@ export default function Steps({
 			      	          editContext={editContext}
 			      	          contextIndex={contextIndex}
 			      	          branchName={branchName}
+			      	          loading={loading}
 
 			      	    />
 

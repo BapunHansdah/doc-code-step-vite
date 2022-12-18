@@ -2,8 +2,9 @@ import axios from 'axios'
 import {useState,useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
 import uniqid from 'uniqid';
+import useAuth from './useAuth' 
 
-export default function(){
+export default function github(){
 	  const [userInfo,setUserInfo] = useState({name:'',token:'',repo:''})
      const [user,setUser] = useState("")
      const [token,setToken] = useState("")
@@ -11,13 +12,14 @@ export default function(){
      const [repoName,setRepoName] = useState("")
      const [errMsg,setErrMsg] = useState({msg:"",color:""})
      const [timer,setTimer] = useState(false)
-
+     const [loading,setLoading] = useState(false)
      const [projects,setProjects] = useState(()=>{
 		return JSON.parse(localStorage.getItem('project')) || []
 	})
 
      
      const navigate = useNavigate()
+     const {auth} = useAuth()
 
      function handleChangeUser(e){
         setUser(e.target.value)
@@ -28,6 +30,7 @@ export default function(){
      }
 
 	 function findRepo(user,token){
+	 	setLoading(true)
 	 	if(user.length <=0){
 	 		alert("username can't be empty")
 	 		return;
@@ -42,9 +45,11 @@ export default function(){
          }
         }).then((res)=>{
             setErrMsg({msg:'success',color:'bg-green-500'})
+            setLoading(false)
  		      setRepo(res.data)
  		      return res.data
  	     }).catch((err)=>{
+ 	     	   setLoading(false)
  	     	   setErrMsg({msg:err.response.data.message,color:"bg-red-500"})
         	   return err.response.data.message
  	     })
@@ -53,16 +58,29 @@ export default function(){
 	 	setRepoName(e.target.value)
 	 }
 
-	 function open(){
+	async function open(){
 	 	   setTimer(true)
 	 	   if(timer){
 	 	   	alert('wait for a second')
 	 	   	return;
 	 	   }
-	 	   setUserInfo({name:user,token:token,repo:repoName})
-	 	   setProjects([...projects,{id:uniqid(),time:new Date(),name:user,token:token,repo:repoName}])
+
+	 	   try{
+           if(auth.token){
+		 	   	await axios.post("/api/project/",{name:user,token:token,repo:repoName,projectID:uniqid()},{
+		 	   		'headers': {
+				                  'Authorization': (auth.token ? auth.token : "")    
+				        }
+				     }).then(res=>{
+	 	                setProjects([...projects,{...res.data}])
+	 	                setUserInfo({name:user,token:token,repo:repoName})
+		 	   	})
+		 	   }
+	 	   }catch(err){
+	 	   	console.log(err)
+	 	   }
 	      setTimeout(()=>{
-	      	navigate('/main')
+	      	navigate('/home')
 	      	setTimer(false)
 	      }, 1000);
 	 }
@@ -70,7 +88,7 @@ export default function(){
 
 	 useEffect(()=>{
 	 	   localStorage.setItem('info',JSON.stringify(userInfo))
-	 	   localStorage.setItem('project',JSON.stringify(projects))
+	 	   // localStorage.setItem('project',JSON.stringify(projects))
 	 },[projects,userInfo])
 
 	 
@@ -79,7 +97,10 @@ export default function(){
 		  <div className="flex h-[600px] items-center justify-center">
               <div className="max-w-md w-full gap-5 flex flex-col px-2">
                  <div className="text-2xl">Find Github User</div>
-                 <div className={`${errMsg.color} p-2 text-white text-center font-bold ${errMsg.msg ? "block":"hidden"}`}>{errMsg.msg}</div>
+                 {
+                    loading ? <div className="text-center">loading...</div> :
+                    <div className={`${errMsg.color} p-2 text-white text-center font-bold ${errMsg.msg ? "block":"hidden"}`}>{errMsg.msg}</div>
+                 }
                  <div className="flex w-full flex-col gap-5">
                       <input className="p-2 bg-white text-black border border-black" value={user} onChange={handleChangeUser} placeholder="name" required={true}/>
                       <input className="p-2 bg-white text-black border border-black" value={token} onChange={handleChangeToken} placeholder="token" type="password" required={true}/>
@@ -88,9 +109,13 @@ export default function(){
                   <div>
                      <select type="option"  onChange={RepoChangeHandle} className="w-full p-2 text-black border border-black">
 							      	    	  <option className="text-black" value={""}>select repository</option>
+                   
+                   	
+                  
 
 						  {
-						  	repo.map((t,i)=>{
+						  	 repo.map((t,i)=>{
+
 				                 return (
 							      	    	  <option key={i} className="text-black" value={t.name}>{t.name}</option>
 				                 	)

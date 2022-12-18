@@ -1,6 +1,6 @@
 //for combining the reducers
 
-import {defaultObj,setCodeValue } from "./List";
+import {authReducer} from "./List";
 import { combineReducers } from "redux";
-const reducers = combineReducers({defaultObj,setCodeValue });
+const reducers = combineReducers({authReducer});
 export default reducers;

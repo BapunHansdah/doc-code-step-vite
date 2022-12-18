@@ -1,15 +1,32 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import uniqid from 'uniqid';
+
 
 export default function BugComponent({issues}){
 
 	   const [issueId,setIssueId] = useState(null)
+	   const [ tasks , setTasks ] = useState(()=>{
+             const taskObj = JSON.parse(localStorage.getItem('task')) || []
+             return taskObj 
+       })
 
 	   function expandIssue(ind){
 	   	  // console.log(ind)
 	   	  setIssueId(ind)
 	   }
+
+	   function addTask(title){
+	    	setTasks([...tasks,{id:uniqid(),title:title,description:"",status:[1,0,0],read:true}])
+	   }
+
+	   useEffect(()=>{
+           // console.log("saved to localStorage")
+           localStorage.setItem('task',JSON.stringify(tasks))       
+         },[tasks])
+
+
 
 
 
@@ -30,7 +47,7 @@ export default function BugComponent({issues}){
 			  				         <h1 className="text-black flex text-sm font flex-wrap cursor-pointer break-all" onClick={()=>expandIssue(i)}>{issue.title}</h1>
 			  				      </div>
 			  				      <div className="h-full flex gap-2">
-			  				         <span  className="bg-green-500 md:font-bold text-white text-xs md:text-sm px-2 py-1 cursor-pointer">Add</span>
+			  				         <span onClick={()=>addTask(issue.title)} className="bg-green-500 md:font-bold text-white text-xs md:text-sm px-2 py-1 cursor-pointer">Add</span>
 			  				         <a href={issue.html_url}  target="_blank" className="bg-blue-500 md:font-bold text-white text-xs md:text-sm px-2 py-1">Check</a>
 			  				      </div>
 			  				    </div>

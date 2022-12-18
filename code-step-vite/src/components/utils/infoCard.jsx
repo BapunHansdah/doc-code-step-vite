@@ -8,8 +8,12 @@ import {BiEditAlt} from 'react-icons/bi'
 
 import {RiDeleteBin4Line} from 'react-icons/ri'
 
+import axios from 'axios'
 
-export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundColor,setHeight,haveIconName,haveAnswer,haveLabel,setInfoBackground}){
+import useAuth from '../useAuth'
+
+
+export default function InfoCard({infoName,tasks,setTasks,taskTab,setDynamicBackgroundColor,setHeight,haveIconName,haveAnswer,haveLabel,setInfoBackground}){
 
 
 	    const [ isEditing ,setIsEditing] = useState(false)
@@ -17,24 +21,55 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 	    const [ editID,setEditID] = useState(null)
 
 
+	    const {auth} = useAuth()
 
 
-	    function editTask(id,title,description,answer){
-	    	setEditID(editID === null ? id : null )
-	    	const setRead = tasks.map((r,i)=>{
-	    		if(id === r.id){
-	    			return {...r,read:!r.read,...editInfo}
-	    		}else{
-	    			return {...r,read:true}
-	    		} 
-	    	})
-	    	setTasks(setRead)
-	    	setEditInfo({title:title,description:description,answer:answer})
-	    	setIsEditing(!isEditing)
+
+
+	    async function editTask(id,title,description,answer){
+	    	try{
+	    		  if(isEditing){
+	    			await axios.put(`api/${infoName}/edit/${id}`,editInfo,{
+	    			'headers': {
+					            'Authorization': (auth.token ? auth.token : "")    
+					           }
+		    		}).then(res=>{
+		    			// console.log(res.data)
+		    		})
+		    	}
+	    	
+
+		    	setEditID(editID === null ? id : null )
+		    	const setRead = tasks.map((r,i)=>{
+		    		if(id === r._id){
+		    			return {...r,read:!r.read,...editInfo}
+		    		}else{
+		    			return {...r,read:true}
+		    		} 
+		    	})
+		    	setTasks(setRead)
+		    	setEditInfo({title:title,description:description,answer:answer})
+		    	setIsEditing(!isEditing)
+
+	    	}catch(err){
+	    		console.log(err)
+	    	}
+
 	    }
-	    function deleteTask(id){
-	    	const setDelete = tasks.filter((d,i)=>d.id!==id)
-	    	setTasks(setDelete)
+	    async function deleteTask(id){
+	    	// console.log(id)
+		       try{
+		                 await axios.delete(`api/${infoName}/delete/${id}`,{
+					        'headers': {
+					            'Authorization': (auth.token ? auth.token : "")    
+					        }
+					     })
+		     	   const setDelete = tasks.filter((d,i)=>d._id!==id)
+	    	       setTasks(setDelete)
+		       }catch(err){
+		         console.log(err)
+		       }
+	    	
 	    }
 
 	    function editChangeHandle(e){
@@ -43,9 +78,9 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
          
 	    }
 
-	    function setCurrentStatus(taskId,statusId){
-	    	const c_status = tasks.map((t,i)=>{
-	    	    if(t.id === taskId){
+	    async function setCurrentStatus(taskId,statusId){	
+		        const c_status = tasks.map((t,i)=>{
+	    	    if(t._id === taskId){
 	    	    	 const st = t.status.map((s,i)=>{
 	    	    		if(i === statusId){
 	    	    			return 1
@@ -53,7 +88,7 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 	    	    			return 0
 	    	    		}
 	    	    	})
-
+	    	    	saveTaskStatus(taskId,st)
 	    	    	return {...t ,status:st}
 
 	    	    }
@@ -64,14 +99,30 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 	    	setTasks(c_status)
 	    }
 
+	   async function saveTaskStatus(id,status){
+	   	try{	   		
+			await axios.put(`api/${infoName}/edit/${id}`,{status:status},{
+			'headers': {
+			            'Authorization': (auth.token ? auth.token : "")    
+			           }
+    		}).then(res=>{
+    			// console.log(res.data)
+    		})
+    	 }
+    	 catch(err){
+    	 	console.log(err)
+    	 }
+	   }
 
- // console.log(tasks)
+
+  // console.log(tasks)
+   // return null
 
 	return(
 			 
              tasks.filter(t=> taskTab === 0 ? t : t.status.indexOf(1)=== taskTab - 1 ).map((m,i)=>{
 			   		return(
-				         <div className={` ${setDynamicBackgroundColor ?  m.status.indexOf(1) === 0 ? "bg-red-400":  m.status.indexOf(1) === 1 ? "bg-orange-400" : "bg-green-400" : "bg-gray-300" } w-full p-2 shadow`} key={m.id}>
+				         <div className={` ${setDynamicBackgroundColor ?  m.status.indexOf(1) === 0 ? "bg-red-400":  m.status.indexOf(1) === 1 ? "bg-orange-400" : "bg-green-400" : "bg-gray-300" } w-full p-2 shadow`} key={m._id}>
 				     	    <div className="flex justify-between gap-2">
 				     	      <div className="flex gap-2 ">
 				     	        <div className="flex gap-2"> 
@@ -83,7 +134,7 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 				     	                        key={s_i} 
 				     	                        className={` ${ m.status.indexOf(1) === s_i ? "text-blue-500":"text-white" } cursor-pointer flex items-center`} 
 				     	                        name="status" 
-				     	                        onClick={()=>setCurrentStatus(m.id,s_i)}>
+				     	                        onClick={()=>setCurrentStatus(m._id,s_i)}>
 				     	                        <AiFillCheckSquare className="shadow-md"/>
 				     	                    </div>
 				     	           	 	)
@@ -101,14 +152,14 @@ export default function InfoCard({tasks,setTasks,taskTab,setDynamicBackgroundCol
 
 				     	       <div className="flex gap-2">
 				     	         <button 
-				     	               className={`cursor-pointer text-black ${!isEditing || !m.read && editID === m.id ? "opacity-100" : "opacity-50"} flex items-center font-semibold`} 
-				     	               onClick={()=>editTask(m.id,m.title,m.description,m.answer)} 
-				     	               disabled={!isEditing || !m.read && editID === m.id ? false : true}>
+				     	               className={`cursor-pointer text-black ${!isEditing || !m.read && editID === m._id ? "opacity-100" : "opacity-50"} flex items-center font-semibold`} 
+				     	               onClick={()=>editTask(m._id,m.title,m.description,m.answer)} 
+				     	               disabled={!isEditing || !m.read && editID === m._id ? false : true}>
 				     	               <BiEditAlt/>{haveIconName ? "Edit" : ""}
 				     	         </button>
 				     	         <button 
 				     	               className={`cursor-pointer text-black ${!isEditing ? "opacity-100" : "opacity-50"} items-center flex font-semibold`} 
-				     	                onClick={()=>deleteTask(m.id)} 
+				     	                onClick={()=>deleteTask(m._id)} 
 				     	               disabled={ !isEditing ? false : true }>
 				     	               <RiDeleteBin4Line/>{haveIconName ? "Delete" : ""}
 				     	         </button>

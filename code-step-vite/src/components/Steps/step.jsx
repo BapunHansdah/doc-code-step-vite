@@ -8,8 +8,13 @@ export default function Step({
 	                         stepContext,
 	                         isContextEditing,
 	                         editContext,
-	                         branchName
+	                         branchName,
+	                         loading
 	                     }){
+
+	if(loading) {
+		return <div className="text-center">loading...</div>
+	}
 
 	return(
 		 <div className="flex flex-col">

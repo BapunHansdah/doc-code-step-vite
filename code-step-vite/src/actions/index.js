@@ -1,19 +1,25 @@
-export function setValue(value,id){
-
+export function get_Token(value){
 	return{
-		type:"SET_VALUE",
-		code:value,
-		file_id:id
+		type:"GET_TOKEN",
+		payload:value
 	}
 
 }
 
-
-
-export function addNewFolder(){
-
+export function get_UserInfo(value){
+	console.log(value)
 	return{
-		type:"ADD_NEW_FOLDER",
+		type:"GET_USER_INFO",
+		payload:value
 	}
 
 }
+
+export function sign_in(value){
+	return{
+		type:"IS_SIGN_IN",
+		payload:value
+	}
+
+}
+

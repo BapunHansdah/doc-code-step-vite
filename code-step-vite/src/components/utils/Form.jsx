@@ -23,7 +23,7 @@ export default function Form({taskInfo,addTaskSubmit,changeHandle,formName}){
   	           <div className={`${expand ?"block" :"hidden"}`}>
   	           <form onSubmit={addTaskSubmit} className="flex flex-col gap-2">
   	             <input className="bg-white p-2 w-full h-[50px]" name="title" placeholder="title"  value={taskInfo.title}  onChange={changeHandle}/>
-  	             <textarea className="bg-white p-2 w-full h-[200px]" name="description" placeholder="question" value={taskInfo.description} onChange={changeHandle}></textarea>
+  	             <textarea className="bg-white p-2 w-full h-[200px]" name="description" placeholder="description" value={taskInfo.description} onChange={changeHandle}></textarea>
   	             <div><button className="bg-blue-500 p-2 text-white">Add {formName}</button></div>
   	           </form>
   	           </div>
