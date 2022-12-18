@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs'
-import Task from '../model/TaskSchema.js'
+import Task from '../model/taskSchema.js'
 import mongoose from 'mongoose'
 import createToken from '../utils/createToken.js'
 import {sendEmailRegister} from '../utils/sendMail.js'
