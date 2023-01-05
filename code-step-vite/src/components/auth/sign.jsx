@@ -26,6 +26,16 @@ function Login(){
    	setSign_info({...sign_info,[e.target.name]:e.target.value})
    }
 
+   async function openDemo(user){
+      try{
+        await axios.post('api/auth/signin',user)
+        dispatch(sign_in(true))
+        navigate('/')
+      }catch(err){
+        console.log(err)
+      }
+}
+
 
 	return(	
 		<div className="max-w-sm mx-auto">
@@ -34,6 +44,7 @@ function Login(){
              	<input className="w-full p-2 border border-black" onChange={changeHandle} name="email"placeholder="email" />
              	<input className="w-full p-2 border border-black" onChange={changeHandle} name="password"placeholder="password" />
              	<button className="w-full p-2 bg-blue-500 text-white mt-2">Login</button> 
+               <div><button className="text-left text-sm cursor-pointer bg-black text-white px-2 py-1 rounded" onClick={()=>openDemo({email:"bapunhansdah777@gmail.com",password:"123456"})}>Login as Guest</button> </div>                             
              	<p className="text-right text-sm">Forgot password ?</p>            	            	
              	<p className="text-center">Not register yet ? <span className="underline"><Link to="/register">Create an account</Link></span></p>
              </form>
